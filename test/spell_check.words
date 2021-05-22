@@ -1,9 +1,7 @@
 apache
 colcon
 iterdir
-noqa
 pathlib
-plugin
 pytest
 scspell
 setuptools
