@@ -10,8 +10,6 @@ from colcon_clean.base_handler \
     import add_base_handler_arguments, get_base_handler_extensions
 from colcon_clean.subverb \
     import clean_paths, CleanSubverbExtensionPoint
-from colcon_core.argument_parser.destination_collector \
-    import DestinationCollectorDecorator
 from colcon_core.event_handler import add_event_handler_arguments
 from colcon_core.plugin_system import satisfies_version
 from colcon_core.verb import check_and_mark_build_tool
@@ -39,9 +37,6 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
             help='Automatic yes to prompts')
         add_base_handler_arguments(parser)
         add_event_handler_arguments(parser)
-
-        decorated_parser = DestinationCollectorDecorator(parser)
-        self.task_argument_destinations = decorated_parser.get_destinations()
 
     def main(self, *, context):  # noqa: D102
         check_and_mark_build_tool(context.args.build_base)
