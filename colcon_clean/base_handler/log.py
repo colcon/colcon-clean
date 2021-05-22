@@ -25,5 +25,5 @@ class LogBaseHandler(BaseHandlerExtensionPoint):
     def get_workspace_paths(self, *, args):  # noqa: D102
         return [args.log_base]
 
-    def get_package_paths(self, *, pkg):  # noqa: D102
+    def get_package_paths(self, *, args, pkg):  # noqa: D102
         return []

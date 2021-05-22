@@ -43,12 +43,13 @@ class BaseHandlerExtensionPoint:
         """
         raise NotImplementedError()
 
-    def get_package_paths(self, *, pkg):
+    def get_package_paths(self, *, args, pkg):
         """
         Get paths for a package.
 
         This method must be overridden in a subclass.
 
+        :param args: The parsed command line arguments
         :param pkg: The package descriptor
         """
         raise NotImplementedError()
