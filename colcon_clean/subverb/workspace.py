@@ -7,6 +7,8 @@ import os.path
 from pathlib import Path
 import shutil
 
+from colcon_clean.base_handler \
+    import add_base_handler_arguments, get_base_handler_extensions
 from colcon_clean.clean.query import query_yes_no
 from colcon_clean.subverb import CleanSubverbExtensionPoint
 from colcon_core.argument_parser.destination_collector \
@@ -27,25 +29,8 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
 
     def add_arguments(self, *, parser):  # noqa: D102
         parser.add_argument(
-            '--build-base',
-            default='build',
-            help='The base path for all build directories (default: build)')
-        parser.add_argument(
-            '--install-base',
-            default='install',
-            help='The base path for all install prefixes (default: install)')
-        parser.add_argument(
-            '--log-base',
-            default='log',
-            help='The base path for all install prefixes (default: log)')
-        parser.add_argument(
-            '--test-result-base',
-            default='build',
-            help='The base path for all test results (default: build)')
-
-        parser.add_argument(
             '--base-select', nargs='*', metavar='BASE_NAME',
-            default=['build', 'install', 'log', 'test_result'],
+            default=sorted(get_base_handler_extensions().keys()),
             help='Select base names to clean in workspace '
                  '(default: [build, install, log, test_result])')
 
@@ -53,6 +38,7 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
             '-y', '--yes',
             action='store_true',
             help='Automatic yes to prompts')
+        add_base_handler_arguments(parser)
         add_event_handler_arguments(parser)
 
         decorated_parser = DestinationCollectorDecorator(parser)
@@ -66,16 +52,16 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
         return 0
 
     def _clean_paths(self, args):
+        base_handler_extensions = get_base_handler_extensions()
         base_paths = set()
         for base_name in args.base_select:
-            base_arg = base_name + '_base'
-            if hasattr(args, base_arg):
-                base_path = getattr(args, base_arg)
+            if base_name in base_handler_extensions:
+                base_path = getattr(args, base_name + '_base')
                 base_path = Path(os.path.abspath(base_path))
                 base_paths.add(base_path)
             else:
                 logger.warning(
-                    "No base path knows for selction '{base_name}'"
+                    "No base handler for selction '{base_name}'"
                     .format_map(locals()))
 
         if not args.yes:
