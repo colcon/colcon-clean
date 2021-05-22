@@ -1,0 +1,10 @@
+{
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.pycodestyleEnabled": true,
+    "cSpell.words": [
+        "noqa"
+    ],
+    "python.pythonPath": "/usr/bin/python3"
+}
