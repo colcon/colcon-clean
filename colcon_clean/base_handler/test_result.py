@@ -23,3 +23,9 @@ class TestResultBaseHandler(BaseHandlerExtensionPoint):
             default=self.base_path,
             help='The base path for all test_result directories '
                  '(default: {self.base_path})'.format_map(locals()))
+
+    def get_workspace_paths(self, *, args):  # noqa: D102
+        return [args.test_result_base]
+
+    def get_package_paths(self, *, pkg):  # noqa: D102
+        return [pkg.test_result_base]

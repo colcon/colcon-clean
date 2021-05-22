@@ -54,11 +54,15 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
     def _clean_paths(self, args):
         base_handler_extensions = get_base_handler_extensions()
         base_paths = set()
+
         for base_name in args.base_select:
             if base_name in base_handler_extensions:
-                base_path = getattr(args, base_name + '_base')
-                base_path = Path(os.path.abspath(base_path))
-                base_paths.add(base_path)
+                base_handler_extension = base_handler_extensions[base_name]
+                workspace_paths = \
+                    base_handler_extension.get_workspace_paths(args=args)
+                for workspace_path in workspace_paths:
+                    workspace_path = Path(os.path.abspath(workspace_path))
+                    base_paths.add(workspace_path)
             else:
                 logger.warning(
                     "No base handler for selction '{base_name}'"

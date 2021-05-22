@@ -33,6 +33,26 @@ class BaseHandlerExtensionPoint:
         """
         raise NotImplementedError()
 
+    def get_workspace_paths(self, *, args):
+        """
+        Get paths for a workspace.
+
+        This method must be overridden in a subclass.
+
+        :param args: The parsed command line arguments
+        """
+        raise NotImplementedError()
+
+    def get_package_paths(self, *, pkg):
+        """
+        Get paths for a package.
+
+        This method must be overridden in a subclass.
+
+        :param pkg: The package descriptor
+        """
+        raise NotImplementedError()
+
 
 def add_base_handler_arguments(parser):
     """
