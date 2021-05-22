@@ -38,12 +38,16 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
             '--log-base',
             default='log',
             help='The base path for all install prefixes (default: log)')
+        parser.add_argument(
+            '--test-result-base',
+            default='build',
+            help='The base path for all test results (default: build)')
 
         parser.add_argument(
             '--base-select', nargs='*', metavar='BASE_NAME',
-            default=['build', 'install', 'log'],
+            default=['build', 'install', 'log', 'test_result'],
             help='Select base names to clean in workspace '
-                 '(default: [build, install, log])')
+                 '(default: [build, install, log, test_result])')
 
         parser.add_argument(
             '-y', '--yes',
@@ -62,13 +66,13 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
         return 0
 
     def _clean_paths(self, args):
-        base_paths = []
+        base_paths = set()
         for base_name in args.base_select:
             base_arg = base_name + '_base'
             if hasattr(args, base_arg):
                 base_path = getattr(args, base_arg)
                 base_path = Path(os.path.abspath(base_path))
-                base_paths.append(base_path)
+                base_paths.add(base_path)
             else:
                 logger.warning(
                     "No base path knows for selction '{base_name}'"
@@ -76,7 +80,7 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
 
         if not args.yes:
             print('Base paths:')
-            for base_path in base_paths:
+            for base_path in sorted(base_paths):
                 print('    ', base_path)
             question = 'Clean the above base paths?'
             args.yes = query_yes_no(question)
