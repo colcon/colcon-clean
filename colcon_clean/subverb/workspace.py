@@ -47,13 +47,10 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
     def main(self, *, context):  # noqa: D102
         check_and_mark_build_tool(context.args.build_base)
 
-        self._clean_paths(context.args)
-
-        return 0
-
-    def _clean_paths(self, args):
         base_handler_extensions = get_base_handler_extensions()
         base_paths = set()
+
+        args = context.args
 
         for base_name in args.base_select:
             if base_name in base_handler_extensions:
@@ -67,6 +64,12 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
                 logger.warning(
                     "No base handler for selction '{base_name}'"
                     .format_map(locals()))
+
+        self._clean_paths(args, base_paths)
+
+        return 0
+
+    def _clean_paths(self, args, base_paths):
 
         confirm_clean = args.yes
         if not confirm_clean:
