@@ -2,6 +2,9 @@
 # Copyright 2021 Ruffin White
 # Licensed under the Apache License, Version 2.0
 
+import shutil
+
+from colcon_clean.clean.query import query_yes_no
 from colcon_core.logging import colcon_logger
 from colcon_core.plugin_system import instantiate_extensions
 from colcon_core.plugin_system import order_extensions_by_name
@@ -57,3 +60,29 @@ def get_subverb_extensions():
     for name, extension in extensions.items():
         extension.SUBVERB_NAME = name
     return order_extensions_by_name(extensions)
+
+
+def clean_paths(paths, confirmed=False):
+    """
+    Clean provided paths with conformation.
+
+    :paths: list
+    :confirmed: bool
+    """
+    if not confirmed:
+        print('Paths:')
+        for path in sorted(paths):
+            print('    ', path)
+        question = 'Clean the above paths?'
+        confirmed = query_yes_no(question)
+
+    if confirmed:
+        for path in paths:
+            _clean_path(path)
+
+
+def _clean_path(path):
+    if path.exists():
+        logger.info(
+            "Cleaning path: '{path}'".format_map(locals()))
+        shutil.rmtree(path)

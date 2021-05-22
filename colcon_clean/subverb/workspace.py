@@ -5,12 +5,11 @@
 import os
 import os.path
 from pathlib import Path
-import shutil
 
 from colcon_clean.base_handler \
     import add_base_handler_arguments, get_base_handler_extensions
-from colcon_clean.clean.query import query_yes_no
-from colcon_clean.subverb import CleanSubverbExtensionPoint
+from colcon_clean.subverb \
+    import clean_paths, CleanSubverbExtensionPoint
 from colcon_core.argument_parser.destination_collector \
     import DestinationCollectorDecorator
 from colcon_core.event_handler import add_event_handler_arguments
@@ -65,26 +64,7 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
                     "No base handler for selction '{base_name}'"
                     .format_map(locals()))
 
-        self._clean_paths(args, base_paths)
+        confirmed = args.yes
+        clean_paths(base_paths, confirmed)
 
         return 0
-
-    def _clean_paths(self, args, base_paths):
-
-        confirm_clean = args.yes
-        if not confirm_clean:
-            print('Base paths:')
-            for base_path in sorted(base_paths):
-                print('    ', base_path)
-            question = 'Clean the above base paths?'
-            confirm_clean = query_yes_no(question)
-
-        if confirm_clean:
-            for base_path in base_paths:
-                self._clean_path(base_path)
-
-    def _clean_path(self, path):
-        if path.exists():
-            logger.info(
-                "Cleaning base path: '{path}'".format_map(locals()))
-            shutil.rmtree(path)
