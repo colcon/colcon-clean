@@ -91,4 +91,6 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
 
     def _clean_path(self, path):
         if path.exists():
+            logger.info(
+                "Cleaning base path: '{path}'".format_map(locals()))
             shutil.rmtree(path)
