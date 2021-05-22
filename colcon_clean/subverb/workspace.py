@@ -68,14 +68,15 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
                     "No base handler for selction '{base_name}'"
                     .format_map(locals()))
 
-        if not args.yes:
+        confirm_clean = args.yes
+        if not confirm_clean:
             print('Base paths:')
             for base_path in sorted(base_paths):
                 print('    ', base_path)
             question = 'Clean the above base paths?'
-            args.yes = query_yes_no(question)
+            confirm_clean = query_yes_no(question)
 
-        if args.yes:
+        if confirm_clean:
             for base_path in base_paths:
                 self._clean_path(base_path)
 
