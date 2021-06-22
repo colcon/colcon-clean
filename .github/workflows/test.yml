@@ -1,13 +1,20 @@
 name: Test Workflow
-on: [pull_request, push]
+on:
+  pull_request:
+  push:
+    branches:
+      - master
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        # python-version: [3.6, 3.7, 3.8]
+        python-version: [3.8]
     steps:
     - uses: actions/checkout@v2
+      with:
+        path: src/colcon-clean
     - uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
@@ -17,12 +24,17 @@ jobs:
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: ${{ runner.os }}-pip-
     - name: Install dependencies
+      working-directory: src/colcon-clean
       run: |
         pip install -r test/requirements.txt
     - name: Run tests
       run: |
-        pytest --cov=colcon_cache --cov-branch
-    - uses: codecov/codecov-action@v1
-      if: matrix.python-version == '3.8'
+        colcon build
+        colcon test
+        colcon test-result --verbose
+    - uses: actions/upload-artifact@v2
       with:
-        env_vars: OS,PYTHON
+        name: coverage
+        path: ./**/coverage.xml
+    - uses: codecov/codecov-action@v1
+      if: always()
