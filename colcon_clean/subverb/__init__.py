@@ -48,6 +48,20 @@ class CleanSubverbExtensionPoint:
         raise NotImplementedError()
 
 
+def add_clean_subverb_arguments(parser):
+    """
+    Add the command line arguments for the clean subverb extensions.
+
+    :param parser: The argument parser
+    """
+    group = parser.add_argument_group(title='Clean subverb arguments')
+
+    group.add_argument(
+        '-y', '--yes',
+        action='store_true',
+        help='Automatic yes to prompts')
+
+
 def get_subverb_extensions():
     """
     Get the available subverb extensions.

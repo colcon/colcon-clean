@@ -64,6 +64,12 @@ def add_base_handler_arguments(parser):
     group = parser.add_argument_group(title='Base handler arguments')
     extensions = get_base_handler_extensions()
 
+    group.add_argument(
+        '--base-select', nargs='*', metavar='BASE_NAME',
+        default=sorted(extensions.keys()),
+        help='Select base names to clean in workspace '
+             '(default: [build, install, log, test_result])')
+
     for key in sorted(extensions.keys()):
         extension = extensions[key]
         extension.add_arguments(parser=group)

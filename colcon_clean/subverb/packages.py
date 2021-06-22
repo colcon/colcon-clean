@@ -9,7 +9,7 @@ from pathlib import Path
 from colcon_clean.base_handler \
     import add_base_handler_arguments, get_base_handler_extensions
 from colcon_clean.subverb \
-    import clean_paths, CleanSubverbExtensionPoint
+    import add_clean_subverb_arguments, clean_paths, CleanSubverbExtensionPoint
 from colcon_core.event_handler import add_event_handler_arguments
 from colcon_core.package_selection import add_arguments \
     as add_packages_arguments
@@ -28,16 +28,7 @@ class PackagesCleanSubverb(CleanSubverbExtensionPoint):
             CleanSubverbExtensionPoint.EXTENSION_POINT_VERSION, '^1.0')
 
     def add_arguments(self, *, parser):  # noqa: D102
-        parser.add_argument(
-            '--base-select', nargs='*', metavar='BASE_NAME',
-            default=sorted(get_base_handler_extensions().keys()),
-            help='Select base names to clean in workspace '
-                 '(default: [build, install, log, test_result])')
-
-        parser.add_argument(
-            '-y', '--yes',
-            action='store_true',
-            help='Automatic yes to prompts')
+        add_clean_subverb_arguments(parser)
         add_base_handler_arguments(parser)
         add_event_handler_arguments(parser)
         add_packages_arguments(parser)
