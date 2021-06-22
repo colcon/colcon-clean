@@ -66,7 +66,7 @@ class PackagesCleanSubverb(CleanSubverbExtensionPoint):
                         base_paths.add(package_path)
             else:
                 logger.warning(
-                    "No base handler for selction '{base_name}'"
+                    "No base handler for selection '{base_name}'"
                     .format_map(locals()))
 
         confirmed = args.yes
