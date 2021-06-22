@@ -13,6 +13,8 @@ jobs:
         python-version: [3.8]
     steps:
     - uses: actions/checkout@v2
+      with:
+        path: src/colcon-clean
     - uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
@@ -22,10 +24,13 @@ jobs:
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: ${{ runner.os }}-pip-
     - name: Install dependencies
+      working-directory: src/colcon-clean
       run: |
         pip install -r test/requirements.txt
     - name: Run tests
       run: |
-        pytest --cov=colcon_cache --cov-branch
+        colcon build
+        colcon test
+        colcon test-result --verbose
     - uses: codecov/codecov-action@v1
       if: always()
