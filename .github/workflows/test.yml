@@ -32,5 +32,9 @@ jobs:
         colcon build
         colcon test
         colcon test-result --verbose
+    - uses: actions/upload-artifact@v2
+      with:
+        name: coverage
+        path: ./**/coverage.xml
     - uses: codecov/codecov-action@v1
       if: always()
