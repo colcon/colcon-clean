@@ -61,6 +61,67 @@ def add_clean_subverb_arguments(parser):
         action='store_true',
         help='Automatic yes to prompts')
 
+    filter_options = parser.add_argument_group(
+        title='Filtering options',
+        description='Specify what files and directories to include. All '
+        'files and directories (including symbolic links) are included '
+        'by default. The --dirhash-match/--dirhash-ignore arguments '
+        'allows for selection using glob/wildcard (".gitignore style") '
+        'path matching. Paths relative to the root `directory` (i.e. '
+        'excluding the name of the root directory itself) are matched '
+        'against the provided patterns. For example, to only include '
+        'python source files, use: `dirhash path/to/dir -m "*.py"` or to '
+        'exclude hidden files and directories use: '
+        '`dirhash path/to.dir -i ".*" ".*/"` which is short for '
+        '`dirhash path/to.dir -m "*" "!.*" "!.*/"`. By adding the '
+        '--dirhash-list argument, all included paths, for the given '
+        'filtering arguments, are returned instead of the hash value. '
+        'For further details see '
+        'https://github.com/andhus/dirhash/README.md#filtering'
+    )
+    # FIXME: Find out how colcon help could display group description
+    filter_options = parser
+
+    filter_options.add_argument(
+        '--dirhash-match',
+        nargs='+',
+        default=['*'],
+        help='One or several patterns for paths to include. NOTE: '
+        'patterns with an asterisk must be in quotes ("*") or the '
+        'asterisk preceded by an escape character (\\*).',
+        metavar=''
+    )
+    filter_options.add_argument(
+        '--dirhash-ignore',
+        nargs='+',
+        default=['.*'],
+        help='One or several patterns for paths to exclude. NOTE: '
+        'patterns with an asterisk must be in quotes ("*") or the '
+        'asterisk preceded by an escape character (\\*).',
+        metavar=''
+    )
+    filter_options.add_argument(
+        '--dirhash-empty-dirs',
+        action='store_true',
+        default=False,
+        help='Include empty directories (containing no files that meet '
+        'the matching criteria and no non-empty sub directories).'
+    )
+    filter_options.add_argument(
+        '--dirhash-no-linked-dirs',
+        dest='dirhash_linked_dirs',
+        action='store_false',
+        default=True,
+        help='Do not include symbolic links to other directories.'
+    )
+    filter_options.add_argument(
+        '--dirhash-no-linked-files',
+        dest='dirhash_linked_files',
+        action='store_false',
+        default=True,
+        help='Do not include symbolic links to files.'
+    )
+
 
 def get_subverb_extensions():
     """
