@@ -40,6 +40,8 @@ class BaseHandlerExtensionPoint:
         This method must be overridden in a subclass.
 
         :param args: The parsed command line arguments
+
+        :rtype: list
         """
         raise NotImplementedError()
 
@@ -51,6 +53,8 @@ class BaseHandlerExtensionPoint:
 
         :param args: The parsed command line arguments
         :param pkg: The package descriptor
+
+        :rtype: list
         """
         raise NotImplementedError()
 
