@@ -8,12 +8,18 @@ from pathlib import Path
 
 from colcon_clean.base_handler \
     import add_base_handler_arguments, get_base_handler_extensions
-from colcon_clean.subverb \
-    import add_clean_subverb_arguments, clean_paths, CleanSubverbExtensionPoint
+from colcon_clean.subverb import (
+    add_clean_subverb_arguments,
+    clean_paths,
+    CleanSubverbExtensionPoint,
+    get_recursion_filter,
+)
 from colcon_core.event_handler import add_event_handler_arguments
 from colcon_core.plugin_system import satisfies_version
 from colcon_core.verb import check_and_mark_build_tool
 from colcon_core.verb import logger
+
+from scantree import scantree
 
 
 class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
@@ -36,6 +42,7 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
         base_paths = set()
 
         args = context.args
+        recursion_filter = get_recursion_filter(args)
 
         for base_name in args.base_select:
             if base_name in base_handler_extensions:
@@ -44,7 +51,18 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
                     base_handler_extension.get_workspace_paths(args=args)
                 for workspace_path in workspace_paths:
                     workspace_path = Path(os.path.abspath(workspace_path))
-                    base_paths.add(workspace_path)
+                    if recursion_filter:
+                        tree = scantree(
+                            directory=workspace_path,
+                            recursion_filter=recursion_filter,
+                            follow_links=False,
+                            include_empty=True)
+                        for filepath in tree.filepaths():
+                            filepath = Path(filepath)
+                            if workspace_path in filepath.parents:
+                                base_paths.add(filepath)
+                    else:
+                        base_paths.add(workspace_path)
             else:
                 logger.warning(
                     "No base handler for selection '{base_name}'"
