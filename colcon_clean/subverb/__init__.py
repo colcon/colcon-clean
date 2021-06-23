@@ -109,6 +109,10 @@ def add_clean_subverb_arguments(parser):
         action='store_false',
         help='Do not include symbolic links to files.'
     )
+    filter_options.set_defaults(
+        clean_no_linked_dirs=True,
+        clean_no_linked_files=True,
+    )
 
 
 def get_recursion_filter(args):
