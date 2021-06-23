@@ -8,7 +8,6 @@ from colcon_clean.clean.query import query_yes_no
 from colcon_core.logging import colcon_logger
 from colcon_core.plugin_system import instantiate_extensions
 from colcon_core.plugin_system import order_extensions_by_name
-
 from scantree import RecursionFilter
 
 
@@ -139,8 +138,9 @@ def get_match_patterns(
     match=None,
     ignore=None
 ):
-    """Helper to compose a list of list of glob/wildcard (".gitignore style")
-    match patterns based on options dedicated for a few standard use-cases.
+    """
+    Compose match pattern from list of glob/wildcard (".gitignore style").
+
     # Arguments
         match: Optional[List[str]] - A list of match-patterns for files to
             *include*. Default `None` which is equivalent to `['*']`,
@@ -154,7 +154,7 @@ def get_match_patterns(
     match_spec = match + ['!' + ign for ign in ignore]
 
     def deduplicate(items):
-        items_set = set([])
+        items_set = set()
         dd_items = []
         for item in items:
             if item not in items_set:
@@ -188,7 +188,7 @@ def clean_paths(paths, confirmed=False):
     :confirmed: bool
     """
     if not paths:
-        message = "No paths cleaned."
+        message = 'No paths cleaned.'
         logger.info(message)
         print(message)
         return
