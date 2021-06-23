@@ -2,7 +2,7 @@
 # Copyright 2021 Ruffin White
 # Licensed under the Apache License, Version 2.0
 
-import shutil
+from pathlib import Path
 
 from colcon_clean.clean.query import query_yes_no
 from colcon_core.logging import colcon_logger
@@ -187,9 +187,17 @@ def clean_paths(paths, confirmed=False):
     :paths: list
     :confirmed: bool
     """
+    if not paths:
+        message = "No paths cleaned."
+        logger.info(message)
+        print(message)
+        return
+
+    cwd_path = Path.cwd()
     if not confirmed:
         print('Paths:')
         for path in sorted(paths):
+            path = path.relative_to(cwd_path)
             print('    ', path)
         question = 'Clean the above paths?'
         confirmed = query_yes_no(question)
@@ -203,4 +211,7 @@ def _clean_path(path):
     if path.exists():
         logger.info(
             "Cleaning path: '{path}'".format_map(locals()))
-        shutil.rmtree(path)
+        if path.is_dir():
+            path.rmdir()
+        else:
+            path.unlink()
