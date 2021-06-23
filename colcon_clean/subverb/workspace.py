@@ -2,8 +2,6 @@
 # Copyright 2021 Ruffin White
 # Licensed under the Apache License, Version 2.0
 
-import os
-import os.path
 from pathlib import Path
 
 from colcon_clean.base_handler \
@@ -13,12 +11,12 @@ from colcon_clean.subverb import (
     clean_paths,
     CleanSubverbExtensionPoint,
     get_recursion_filter,
+    scan_directory,
 )
 from colcon_core.event_handler import add_event_handler_arguments
 from colcon_core.plugin_system import satisfies_version
 from colcon_core.verb import check_and_mark_build_tool
 from colcon_core.verb import logger
-from scantree import scantree
 
 
 class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
@@ -49,19 +47,9 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
                 workspace_paths = \
                     base_handler_extension.get_workspace_paths(args=args)
                 for workspace_path in workspace_paths:
-                    workspace_path = Path(os.path.abspath(workspace_path))
-                    if recursion_filter:
-                        tree = scantree(
-                            directory=workspace_path,
-                            recursion_filter=recursion_filter,
-                            follow_links=False,
-                            include_empty=True)
-                        for filepath in tree.filepaths():
-                            filepath = Path(filepath)
-                            if workspace_path in filepath.parents:
-                                base_paths.add(filepath)
-                    else:
-                        base_paths.add(workspace_path)
+                    workspace_path = Path(workspace_path).absolute()
+                    base_paths.update(
+                        scan_directory(workspace_path, recursion_filter))
             else:
                 logger.warning(
                     "No base handler for selection '{base_name}'"

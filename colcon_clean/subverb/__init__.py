@@ -8,7 +8,7 @@ from colcon_clean.clean.query import query_yes_no
 from colcon_core.logging import colcon_logger
 from colcon_core.plugin_system import instantiate_extensions
 from colcon_core.plugin_system import order_extensions_by_name
-from scantree import RecursionFilter
+from scantree import RecursionFilter, scantree
 
 
 logger = colcon_logger.getChild(__name__)
@@ -113,6 +113,33 @@ def add_clean_subverb_arguments(parser):
         clean_no_linked_dirs=True,
         clean_no_linked_files=True,
     )
+
+
+def scan_directory(directory, recursion_filter):
+    """
+    Scan directory with recursion filter.
+
+    The recursion filter includes match patterns or is None.
+
+    :param directory: Path
+    :param recursion_filter: RecursionFilter
+
+    :rtype: list
+    """
+    base_paths = set()
+    if recursion_filter:
+        tree = scantree(
+            directory=directory,
+            recursion_filter=recursion_filter,
+            follow_links=False,
+            include_empty=True)
+        for filepath in tree.filepaths():
+            filepath = Path(filepath)
+            if directory in filepath.parents:
+                base_paths.add(filepath)
+    else:
+        base_paths.add(directory)
+    return base_paths
 
 
 def get_recursion_filter(args):
