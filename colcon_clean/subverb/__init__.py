@@ -100,16 +100,16 @@ def add_clean_subverb_arguments(parser):
         'asterisk preceded by an escape character (\\*).',
         metavar=''
     )
-    # filter_options.add_argument(
-    #     '--clean-linked-dirs',
-    #     action='store_true',
-    #     help='Do not include symbolic links to other directories.'
-    # )
-    # filter_options.add_argument(
-    #     '--clean-linked-files',
-    #     action='store_true',
-    #     help='Do not include symbolic links to files.'
-    # )
+    filter_options.add_argument(
+        '--clean-no-linked-dirs',
+        action='store_false',
+        help='Do not include symbolic links to other directories.'
+    )
+    filter_options.add_argument(
+        '--clean-no-linked-files',
+        action='store_false',
+        help='Do not include symbolic links to files.'
+    )
 
 
 def get_recursion_filter(args):
@@ -126,14 +126,9 @@ def get_recursion_filter(args):
         match_patterns = get_match_patterns(
             match=args.clean_match,
             ignore=args.clean_ignore)
-        # recursion_filter = RecursionFilter(
-        #     linked_dirs=args.clean_linked_dirs,
-        #     linked_files=args.clean_linked_files,
-        #     match=match_patterns
-        # )
         recursion_filter = RecursionFilter(
-            linked_dirs=True,
-            linked_files=True,
+            linked_dirs=args.clean_no_linked_dirs,
+            linked_files=args.clean_no_linked_files,
             match=match_patterns
         )
         return recursion_filter
