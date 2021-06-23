@@ -127,6 +127,9 @@ def scan_directory(directory, recursion_filter):
     :rtype: list
     """
     base_paths = set()
+    if not directory.exists():
+        return base_paths
+
     if recursion_filter:
         tree = scantree(
             directory=directory,
@@ -239,10 +242,9 @@ def clean_paths(paths, confirmed=False):
 
 
 def _clean_path(path):
-    if path.exists():
-        logger.info(
-            "Cleaning path: '{path}'".format_map(locals()))
-        if path.is_dir():
-            path.rmdir()
-        else:
-            path.unlink()
+    logger.info(
+        "Cleaning path: '{path}'".format_map(locals()))
+    if path.is_dir():
+        path.rmdir()
+    else:
+        path.unlink()
