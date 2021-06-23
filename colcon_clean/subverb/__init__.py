@@ -3,6 +3,7 @@
 # Licensed under the Apache License, Version 2.0
 
 from pathlib import Path
+import shutil
 
 from colcon_clean.clean.query import query_yes_no
 from colcon_core.logging import colcon_logger
@@ -245,6 +246,6 @@ def _clean_path(path):
     logger.info(
         "Cleaning path: '{path}'".format_map(locals()))
     if path.is_dir():
-        path.rmdir()
+        shutil.rmtree(path)
     else:
         path.unlink()

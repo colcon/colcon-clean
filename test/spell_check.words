@@ -13,6 +13,7 @@ noqa
 pathlib
 plugin
 pytest
+rmtree
 rtype
 scantree
 scspell
