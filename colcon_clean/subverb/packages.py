@@ -65,7 +65,8 @@ class PackagesCleanSubverb(CleanSubverbExtensionPoint):
                     "No base handler for selection '{base_name}'"
                     .format_map(locals()))
 
-        confirmed = args.yes
-        clean_paths(base_paths, confirmed)
+        clean_paths(
+            paths=base_paths,
+            confirmed=args.yes)
 
         return 0
