@@ -9,6 +9,9 @@ from colcon_core.logging import colcon_logger
 from colcon_core.plugin_system import instantiate_extensions
 from colcon_core.plugin_system import order_extensions_by_name
 
+from scantree import RecursionFilter
+
+
 logger = colcon_logger.getChild(__name__)
 
 
@@ -62,65 +65,110 @@ def add_clean_subverb_arguments(parser):
         help='Automatic yes to prompts')
 
     filter_options = parser.add_argument_group(
-        title='Filtering options',
+        title='Clean filter arguments',
         description='Specify what files and directories to include. All '
         'files and directories (including symbolic links) are included '
-        'by default. The --dirhash-match/--dirhash-ignore arguments '
+        'by default. The --clean-match/--clean-ignore arguments '
         'allows for selection using glob/wildcard (".gitignore style") '
         'path matching. Paths relative to the root `directory` (i.e. '
         'excluding the name of the root directory itself) are matched '
         'against the provided patterns. For example, to only include '
-        'python source files, use: `dirhash path/to/dir -m "*.py"` or to '
-        'exclude hidden files and directories use: '
-        '`dirhash path/to.dir -i ".*" ".*/"` which is short for '
-        '`dirhash path/to.dir -m "*" "!.*" "!.*/"`. By adding the '
-        '--dirhash-list argument, all included paths, for the given '
-        'filtering arguments, are returned instead of the hash value. '
-        'For further details see '
-        'https://github.com/andhus/dirhash/README.md#filtering'
+        'Gcov Data files, use: `colcon clean workspace --clean-match '
+        '"*.gcda"` or to exclude hidden files and directories use: '
+        '`colcon clean workspace --clean-ignore ".*" ".*/"` '
+        'which is short for '
+        '`colcon clean workspace --clean-match "*" "!.*" "!.*/"`. '
     )
-    # FIXME: Find out how colcon help could display group description
-    filter_options = parser
+    # # FIXME: Find out how colcon help could display group description
+    # filter_options = parser
 
     filter_options.add_argument(
-        '--dirhash-match',
+        '--clean-match',
         nargs='+',
-        default=['*'],
+        default=None,
         help='One or several patterns for paths to include. NOTE: '
         'patterns with an asterisk must be in quotes ("*") or the '
         'asterisk preceded by an escape character (\\*).',
         metavar=''
     )
     filter_options.add_argument(
-        '--dirhash-ignore',
+        '--clean-ignore',
         nargs='+',
-        default=['.*'],
+        default=None,
         help='One or several patterns for paths to exclude. NOTE: '
         'patterns with an asterisk must be in quotes ("*") or the '
         'asterisk preceded by an escape character (\\*).',
         metavar=''
     )
-    filter_options.add_argument(
-        '--dirhash-empty-dirs',
-        action='store_true',
-        default=False,
-        help='Include empty directories (containing no files that meet '
-        'the matching criteria and no non-empty sub directories).'
-    )
-    filter_options.add_argument(
-        '--dirhash-no-linked-dirs',
-        dest='dirhash_linked_dirs',
-        action='store_false',
-        default=True,
-        help='Do not include symbolic links to other directories.'
-    )
-    filter_options.add_argument(
-        '--dirhash-no-linked-files',
-        dest='dirhash_linked_files',
-        action='store_false',
-        default=True,
-        help='Do not include symbolic links to files.'
-    )
+    # filter_options.add_argument(
+    #     '--clean-linked-dirs',
+    #     action='store_true',
+    #     help='Do not include symbolic links to other directories.'
+    # )
+    # filter_options.add_argument(
+    #     '--clean-linked-files',
+    #     action='store_true',
+    #     help='Do not include symbolic links to files.'
+    # )
+
+
+def get_recursion_filter(args):
+    """
+    Get the recursion filter.
+
+    The recursion filter includes match patterns or is None.
+
+    :param args: The parsed command line arguments
+
+    :rtype: RecursionFilter or None
+    """
+    if args.clean_match or args.clean_ignore:
+        match_patterns = get_match_patterns(
+            match=args.clean_match,
+            ignore=args.clean_ignore)
+        # recursion_filter = RecursionFilter(
+        #     linked_dirs=args.clean_linked_dirs,
+        #     linked_files=args.clean_linked_files,
+        #     match=match_patterns
+        # )
+        recursion_filter = RecursionFilter(
+            linked_dirs=True,
+            linked_files=True,
+            match=match_patterns
+        )
+        return recursion_filter
+    return None
+
+
+def get_match_patterns(
+    match=None,
+    ignore=None
+):
+    """Helper to compose a list of list of glob/wildcard (".gitignore style")
+    match patterns based on options dedicated for a few standard use-cases.
+    # Arguments
+        match: Optional[List[str]] - A list of match-patterns for files to
+            *include*. Default `None` which is equivalent to `['*']`,
+            i.e. everything is included (unless excluded by arguments below).
+        ignore: Optional[List[str]] -  A list of match-patterns for files to
+            *ignore*. Default `None` (no ignore patterns).
+    """
+    match = ['*'] if match is None else list(match)
+    ignore = [] if ignore is None else list(ignore)
+
+    match_spec = match + ['!' + ign for ign in ignore]
+
+    def deduplicate(items):
+        items_set = set([])
+        dd_items = []
+        for item in items:
+            if item not in items_set:
+                dd_items.append(item)
+                items_set.add(item)
+
+        return dd_items
+
+    return deduplicate(match_spec)
 
 
 def get_subverb_extensions():
