@@ -1,5 +1,11 @@
 apache
 colcon
+deduplicate
+filepath
+filepaths
+gcda
+gcov
+gitignore
 https
 iterdir
 nargs
@@ -9,12 +15,13 @@ plugin
 pytest
 rmtree
 rtype
+scantree
 scspell
-selction
 setuptools
 stackoverflow
 subparser
 subparsers
 subverb
 thomas
+wildcard
 workspaces
