@@ -3,9 +3,9 @@
 [![GitHub Workflow Status](https://github.com/ruffsl/colcon-clean/actions/workflows/test.yml/badge.svg)](https://github.com/ruffsl/colcon-clean/actions/workflows/test.yml)
 [![Codecov](https://codecov.io/gh/ruffsl/colcon-clean/branch/master/graph/badge.svg)](https://codecov.io/gh/ruffsl/colcon-clean)
 
-An extension for [colcon-core](https://github.com/colcon/colcon-core) to clean package workspaces. Enables cleaning of various colcon paths, such as build or install folders, for either the entire workspace or for selected perpackge with advanced path globing options. In conjunction with [colcon-package-selection](https://github.com/colcon/colcon-package-selection), this extension can help maintin a higenic builds when leveraging persistent workpsaces for caching by allowing users to finely remove stale artifacts while preserving what can be cached for during software development. For example, when pulling various changes into a local workspace to review pull requests, this extension can be used to wipe only build and install paths for modified or effected packages, ensuring subsqent build are not cross contaminated from previous jobs.
+An extension for [colcon-core](https://github.com/colcon/colcon-core) to clean package workspaces. Enables cleaning of various colcon paths, such as build or install folders, for either the entire workspace or for selected packages with advanced path globing options. In conjunction with [colcon-package-selection](https://github.com/colcon/colcon-package-selection), this extension can help maintain hygienic build environments while leveraging persistent workspaces for caching by allowing users to finely remove stale artifacts, preserving what can be cached during software development. For example, when pulling various changes into a local workspace to review pull requests, this extension can be used to wipe only the build and install paths for effected packages, ensuring subsequent builds are not cross contaminated from previous jobs.
 
-The extension works by generating lockfiles that incorporate the respective state of package source files, either directly via hashing source directories or indirectly via detected revision control. Upon successful task completion for a package job, as when evoking colcon verbs like build, test, etc, these lockfiles are updated for the evoked verb, thereby delineating the provenance of the job’s results. For package selection, these lockfiles are then used to assess whether a verb’s cached outcome for a package remains relevant or valid.
+The extension works by providing a convenient wrapper around filesystem deletion, allowing users to specify at which base paths to be cleaned (`build`, `install`, `log`, `test_result`), at what level cleaning should take place (global workspace or per package), and if specified what exact files should (or should not) be removed.
 
 
 ## Quick start
@@ -30,12 +30,13 @@ colcon clean packages \
         colcon-package-information
 ```
 
-Clean build and install paths for entire workspace:
+Clean gcov count data files for entire workspace:
 ```
 colcon clean workspace \
     --base-select \
         build \
-        install
+    --clean-match \
+      "*.gcda"
 ```
 
 
@@ -65,10 +66,14 @@ Package Selection
 
 ## Clean subverb arguments
 
+By default, this extension will provide an interactive confirmation prompt with printout list of files to be deleted. This dialogue can be automatically skipped, yet these deletion events can still be observed via the command's resulting colcon log file.
+
 - `-y`, `--yes`
   - Automatic yes to prompts
 
 ### Base handler arguments
+
+Additional arguments commonly supported for all subverbs in this extension provide options to select which base paths to clean, where they may be relocated:
 
 - `--base-select`
   - Select base names to clean in workspace (default: [build, install, log, test_result])
@@ -101,15 +106,13 @@ This extension makes use of a number of colcon-core extension points for registe
 
 ### `BaseHandlerExtensionPoint`
 
-This extension point determines 
-...
-. Default base handler extensions provided include:
+This extension point determines the types of base paths that may be selected for cleaning. Default base handler extensions provided include:
 
 - `build`
-  - Do not propagate lockfile, as `lock` subverb handles this explicitly
+  - Note: by default this extension does not follow symlinks
 - `install`
-  - Do not propagate lockfile, using `cache` lockfile as a reference
+  - Note: by default this extension does not follow symlinks
 - `log`
-  - Propagate lockfile, using `cache` lockfile as a reference
+  - Note: logs are stored by time, so package selection is not applicable
 - `test_result`
-  - Propagate lockfile, using `build` lockfile as a reference
+  - Note: by default colcon uses `build` path to store test results
