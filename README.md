@@ -3,7 +3,7 @@
 [![GitHub Workflow Status](https://github.com/ruffsl/colcon-clean/actions/workflows/test.yml/badge.svg)](https://github.com/ruffsl/colcon-clean/actions/workflows/test.yml)
 [![Codecov](https://codecov.io/gh/ruffsl/colcon-clean/branch/master/graph/badge.svg)](https://codecov.io/gh/ruffsl/colcon-clean)
 
-An extension for [colcon-core](https://github.com/colcon/colcon-core) to clean package workspaces. Enables cleaning of various colcon paths, such as build or install folders, for either the entire workspace or for selected packages with advanced path globing options. In conjunction with [colcon-package-selection](https://github.com/colcon/colcon-package-selection), this extension can help maintain hygienic build environments while leveraging persistent workspaces for caching by allowing users to finely remove stale artifacts, preserving what can be cached during software development. For example, when pulling various changes into a local workspace to review pull requests, this extension can be used to wipe only the build and install paths for effected packages, ensuring subsequent builds are not cross contaminated from previous jobs.
+An extension for [colcon-core](https://github.com/colcon/colcon-core) to clean package workspaces. Enables cleaning of various colcon paths, such as build or install folders, for either the entire workspace or for selected packages with advanced path globing options. In conjunction with [colcon-package-selection](https://github.com/colcon/colcon-package-selection), this extension can help maintain hygienic build environments while leveraging persistent workspaces for caching by allowing users to finely remove stale artifacts, preserving what can be cached during software development. For example, when pulling various changes into a local workspace to review pull requests, this extension can be used to wipe only the build and install paths for affected packages, ensuring subsequent builds are not cross contaminated from previous jobs.
 
 The extension works by providing a convenient wrapper around filesystem deletion, allowing users to specify at which base paths to be cleaned (`build`, `install`, `log`, `test_result`), at what level cleaning should take place (global workspace or per package), and if specified what exact files should (or should not) be removed.
 
@@ -53,14 +53,14 @@ The `packages` subverb provides a means to locally clean the package level base 
 
 ## Clean subverb arguments
 
-By default, this extension will provide an interactive confirmation prompt with printout list of files to be deleted. This dialogue can be automatically skipped, yet these deletion events can still be observed via the command's resulting colcon log file.
+By default, this extension will provide an interactive confirmation prompt with a printout of files to be deleted. This dialogue can be automatically skipped; these deletion events can still be observed via the command's resulting colcon log file.
 
 - `-y`, `--yes`
   - Automatic yes to prompts
 
 ### Base handler arguments
 
-Additional arguments commonly supported for all subverbs in this extension provide options to select which base paths to clean, where they may be relocated:
+Additional arguments supported by all subverbs provide the option to select which base paths to clean, where they may be relocated:
 
 - `--base-select`
   - Select base names to clean in workspace (default: [build, install, log, test_result])
@@ -89,7 +89,7 @@ Specify what files and directories to include. All files and directories (includ
 
 ## Extension points
 
-This extension makes use of a number of colcon-core extension points for registering verbs, subverbs with colcon CLI. This extension also provides it's own extension points for additional support for further cleaning strategies.
+This extension makes use of a number of colcon-core extension points for registering verbs, subverbs with colcon CLI. This extension also provides it's own extension points to support additional cleaning strategies.
 
 ### `BaseHandlerExtensionPoint`
 
