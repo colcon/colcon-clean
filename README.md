@@ -44,24 +44,11 @@ colcon clean workspace \
 
 ### `workspace` - Clean paths for workspace
 
-The `workspace` subverb 
-...
-
-- `--build-base`
-  - The base path for all build directories (default: build)
-- `--ignore-dependencies`
-  - Ignore dependencies when capturing caches (default: false)
+The `workspace` subverb provides a means to globally clean the top level base paths for the entire workspace.
 
 ### `packages` - Clean paths for packages
 
-The `packages` subverb 
-...
-Package Selection
-
-- `--build-base`
-  - The base path for all build directories (default: build)
-- `--ignore-dependencies`
-  - Ignore dependencies when capturing caches (default: false)
+The `packages` subverb provides a means to locally clean the package level base paths using package selection.
 
 
 ## Clean subverb arguments
