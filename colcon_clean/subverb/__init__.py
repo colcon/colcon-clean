@@ -246,6 +246,6 @@ def _clean_path(path):
     logger.info(
         "Cleaning path: '{path}'".format_map(locals()))
     if path.is_dir():
-        shutil.rmtree(path)
+        shutil.rmtree(path, ignore_errors=True)
     else:
         path.unlink()
