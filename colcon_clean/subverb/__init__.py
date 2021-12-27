@@ -2,6 +2,7 @@
 # Copyright 2021 Ruffin White
 # Licensed under the Apache License, Version 2.0
 
+import os
 from pathlib import Path
 import shutil
 
@@ -242,10 +243,22 @@ def clean_paths(paths, confirmed=False):
             _clean_path(path)
 
 
+def _onerror(func, path, excinfo):
+    if os.path.isdir(path) and any(os.scandir(path)):
+        logger.warn(
+            "Skipping path: '{path}'".format_map(locals()))
+        return
+    elif excinfo[0] == PermissionError:
+        logger.warn(
+            "Skipping path: '{path}'".format_map(locals()))
+        return
+    raise
+
+
 def _clean_path(path):
     logger.info(
         "Cleaning path: '{path}'".format_map(locals()))
     if path.is_dir():
-        shutil.rmtree(path, ignore_errors=True)
+        shutil.rmtree(path, onerror=_onerror)
     else:
         path.unlink()
