@@ -2,7 +2,6 @@
 # Copyright 2021 Ruffin White
 # Licensed under the Apache License, Version 2.0
 
-import os
 from pathlib import Path
 import shutil
 
@@ -244,13 +243,11 @@ def clean_paths(paths, confirmed=False):
 
 
 def _onerror(func, path, excinfo):
-    if os.path.isdir(path) and any(os.scandir(path)):
+    if excinfo[0] in (OSError, PermissionError):
         logger.warn(
             "Skipping path: '{path}'".format_map(locals()))
-        return
-    elif excinfo[0] == PermissionError:
-        logger.warn(
-            "Skipping path: '{path}'".format_map(locals()))
+        logger.info(
+            "Skipping info: '{excinfo[1]}'".format_map(locals()))
         return
     raise
 
