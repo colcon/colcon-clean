@@ -1,6 +1,7 @@
 apache
 colcon
 deduplicate
+excinfo
 filepath
 filepaths
 gcda

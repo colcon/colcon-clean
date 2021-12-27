@@ -242,10 +242,20 @@ def clean_paths(paths, confirmed=False):
             _clean_path(path)
 
 
+def _onerror(func, path, excinfo):
+    if excinfo[0] in (OSError, PermissionError):
+        logger.warn(
+            "Skipping path: '{path}'".format_map(locals()))
+        logger.info(
+            "Skipping info: '{excinfo[1]}'".format_map(locals()))
+        return
+    raise
+
+
 def _clean_path(path):
     logger.info(
         "Cleaning path: '{path}'".format_map(locals()))
     if path.is_dir():
-        shutil.rmtree(path)
+        shutil.rmtree(path, onerror=_onerror)
     else:
         path.unlink()
