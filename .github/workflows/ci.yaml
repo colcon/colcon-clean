@@ -1,0 +1,37 @@
+name: Run tests
+
+on:
+  push:
+    branches: ['master']
+  pull_request:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      strategy: ${{steps.load.outputs.strategy}}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: colcon/ci
+      - id: load
+        run: echo "::set-output name=strategy::$(echo $(cat strategy.json))"
+
+  pytest:
+    needs: [setup]
+    strategy: ${{fromJson(needs.setup.outputs.strategy)}}
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{matrix.python}}
+      - uses: colcon/ci@v1
+      - uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: ./**/coverage.xml
+      - uses: codecov/codecov-action@v1
+        if: always()
