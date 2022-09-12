@@ -1,6 +1,6 @@
 # colcon-clean
 
-[![GitHub Workflow Status](https://github.com/ruffsl/colcon-clean/actions/workflows/test.yml/badge.svg)](https://github.com/ruffsl/colcon-clean/actions/workflows/test.yml)
+[![GitHub Workflow Status](https://github.com/ruffsl/colcon-clean/actions/workflows/ci.yaml/badge.svg?branch=master&event=push)](https://github.com/ruffsl/colcon-clean/actions/workflows/ci.yaml?query=branch%3Amaster+event%3Apush)
 [![Codecov](https://codecov.io/gh/ruffsl/colcon-clean/branch/master/graph/badge.svg)](https://codecov.io/gh/ruffsl/colcon-clean)
 
 An extension for [colcon-core](https://github.com/colcon/colcon-core) to clean package workspaces. Enables cleaning of various colcon paths, such as build or install folders, for either the entire workspace or for selected packages with advanced path globing options. In conjunction with [colcon-package-selection](https://github.com/colcon/colcon-package-selection), this extension can help maintain hygienic build environments while leveraging persistent workspaces for caching by allowing users to finely remove stale artifacts, preserving what can be cached during software development. For example, when pulling various changes into a local workspace to review pull requests, this extension can be used to wipe only the build and install paths for affected packages, ensuring subsequent builds are not cross contaminated from previous jobs.
