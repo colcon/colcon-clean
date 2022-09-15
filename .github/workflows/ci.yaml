@@ -33,5 +33,4 @@ jobs:
         with:
           name: coverage
           path: ./**/coverage.xml
-      - uses: codecov/codecov-action@v1
-        if: always()
+      - uses: codecov/codecov-action@v3
