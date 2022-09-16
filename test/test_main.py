@@ -26,6 +26,8 @@ def test_main():
             '--base-select', \
                 'build', \
                 'install', \
+                'log', \
+                'test_result', \
             '--packages-select', \
                 'test-package-b', \
                 'test-package-c'])  # noqa
@@ -35,6 +37,13 @@ def test_main():
                 'build', \
             '--clean-match', \
                 '*.py'])  # noqa
+
+        main(argv=argv + ['clean', 'workspace', '--yes', \
+            '--base-select', \
+                'build', \
+                'install', \
+                'log', \
+                'test_result'])  # noqa
 
         print('ws_base: ', ws_base)
     finally:
