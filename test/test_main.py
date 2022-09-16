@@ -9,7 +9,7 @@ from tempfile import mkdtemp
 from colcon_core.command import main
 
 
-def test_main():
+def test_main(monkeypatch):
     ws_base = Path(mkdtemp(prefix='test_colcon_'))
     resources_base = Path('test', 'resources').absolute()
     shutil.copytree(resources_base / 'test_src', ws_base / 'src')
@@ -44,6 +44,13 @@ def test_main():
                 'install', \
                 'log', \
                 'test_result'])  # noqa
+
+        main(argv=argv + ['clean', 'workspace', '--yes'])  # noqa
+
+        main(argv=argv + ['build'])
+
+        monkeypatch.setattr('builtins.input', lambda _: 'y')
+        main(argv=argv + ['clean', 'workspace'])  # noqa
 
         print('ws_base: ', ws_base)
     finally:
