@@ -1,5 +1,8 @@
 apache
+blocklist
+chdir
 colcon
+copytree
 deduplicate
 excinfo
 filepath
@@ -9,6 +12,7 @@ gcov
 gitignore
 https
 iterdir
+mkdtemp
 nargs
 noqa
 pathlib
@@ -23,6 +27,7 @@ stackoverflow
 subparser
 subparsers
 subverb
+tempfile
 thomas
 wildcard
 workspaces
