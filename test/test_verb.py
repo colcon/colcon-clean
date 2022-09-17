@@ -22,6 +22,10 @@ def test_verb_interface():
     rc = interface.main(context=context)
     assert rc == 'Error: No subverb provided'
 
-    context.args.subverb_name = 'lock'
+    context.args.subverb_name = 'packages'
+    rc = interface.main(context=context)
+    assert rc is None
+
+    context.args.subverb_name = 'workspace'
     rc = interface.main(context=context)
     assert rc is None
