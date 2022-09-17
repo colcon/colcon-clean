@@ -242,7 +242,7 @@ def clean_paths(paths, confirmed=False):
             _clean_path(path)
 
 
-def _onerror(func, path, excinfo):
+def _onerror(func, path, excinfo):  # pragma: no cover
     if excinfo[0] in (OSError, PermissionError):  # pragma: no branch
         logger.warn(
             "Skipping path: '{path}'".format_map(locals()))
