@@ -139,7 +139,7 @@ def scan_directory(directory, recursion_filter):
             include_empty=True)
         for filepath in tree.filepaths():
             filepath = Path(filepath)
-            if directory in filepath.parents:
+            if directory in filepath.parents:  # pragma: no branch
                 base_paths.add(filepath)
     else:
         base_paths.add(directory)
@@ -243,7 +243,7 @@ def clean_paths(paths, confirmed=False):
 
 
 def _onerror(func, path, excinfo):
-    if excinfo[0] in (OSError, PermissionError):
+    if excinfo[0] in (OSError, PermissionError):  # pragma: no branch
         logger.warn(
             "Skipping path: '{path}'".format_map(locals()))
         logger.info(
