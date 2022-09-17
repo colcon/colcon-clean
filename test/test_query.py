@@ -1,27 +1,23 @@
 # Copyright 2021 Ruffin White
 # Licensed under the Apache License, Version 2.0
 
-# from colcon_clean.clean.query import query_yes_no
-# from mock import Mock
+from colcon_clean.clean.query import query_yes_no
+import pytest
 
 
-# class Object(object):
-#     pass
+def test_query_interface(monkeypatch):
+    question = 'Clean the above paths?'
 
+    monkeypatch.setattr('builtins.input', lambda: '')
+    assert query_yes_no(question, default='yes') is True
+    assert query_yes_no(question, default='no') is False
+    with pytest.raises(ValueError):
+        query_yes_no(question, default='foo')
 
-def test_query_interface():
-    pass
-    # interface = CleanVerb()
-    # interface._subparser = Object()
-    # interface._subparser.format_usage = Mock(return_value='')
+    input_iter = iter(['', 'y'])
+    monkeypatch.setattr('builtins.input', lambda x=input_iter: next(x))
+    assert query_yes_no(question, default=None) is True
 
-    # args = Object()
-    # context = CommandContext(command_name='clean', args=args)
-
-    # context.args.subverb_name = None
-    # rc = interface.main(context=context)
-    # assert rc == 'Error: No subverb provided'
-
-    # context.args.subverb_name = 'lock'
-    # rc = interface.main(context=context)
-    # assert rc is None
+    input_iter = iter(['', 'n'])
+    monkeypatch.setattr('builtins.input', lambda x=input_iter: next(x))
+    assert query_yes_no(question, default=None) is False
