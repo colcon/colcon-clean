@@ -64,6 +64,10 @@ def test_main(monkeypatch):
 
         main(argv=argv + ['build'])
 
+        # Don't clean workspace base paths when prompted by user input
+        monkeypatch.setattr('builtins.input', lambda _: 'n')
+        main(argv=argv + ['clean', 'workspace'])  # noqa
+
         # Clean workspace base paths when prompted by user input
         monkeypatch.setattr('builtins.input', lambda _: 'y')
         main(argv=argv + ['clean', 'workspace'])  # noqa
