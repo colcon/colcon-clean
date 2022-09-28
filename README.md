@@ -64,6 +64,8 @@ Additional arguments supported by all subverbs provide the option to select whic
 
 - `--base-select`
   - Select base names to clean in workspace (default: [build, install, log, test_result])
+- `--base-ignore`
+  - Ignore base names to clean in workspace (default: [])
 - `--build-base`
   - The base path for all build directories (default: build)
 - `--install-base`

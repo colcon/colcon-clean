@@ -76,6 +76,13 @@ def add_base_handler_arguments(parser):
         help='Select base names to clean in workspace '
              '(default: {extension_keys})'.format_map(locals()))
 
+    group.add_argument(
+        '--base-ignore', nargs='*', metavar='BASE_NAME',
+        choices=extension_keys,
+        default=[],
+        help='Ignore base names to clean in workspace '
+             '(default: [])')
+
     for key in sorted(extensions.keys()):
         extension = extensions[key]
         extension.add_arguments(parser=group)

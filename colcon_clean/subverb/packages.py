@@ -47,6 +47,11 @@ class PackagesCleanSubverb(CleanSubverbExtensionPoint):
         recursion_filter = get_recursion_filter(args)
 
         for base_name in args.base_select:
+            if base_name in args.base_ignore:
+                logger.info(
+                    "Ignoring base handler for selection '{base_name}'"
+                    .format_map(locals()))
+                continue
             if base_name in base_handler_extensions:
                 base_handler_extension = base_handler_extensions[base_name]
                 for decorator in decorators:
