@@ -67,7 +67,7 @@ def test_main(monkeypatch):
         main(argv=argv + ['build'])
 
         # Don't clean workspace base paths when prompted by user input
-        monkeypatch.setattr('builtins.input', lambda _: 'n')
+        monkeypatch.setattr('builtins.input', lambda: 'n')
         main(argv=argv + ['clean', 'workspace'])  # noqa
 
         # Ignore one workspace base paths explicitly
@@ -81,7 +81,7 @@ def test_main(monkeypatch):
                 'log'])  # noqa
 
         # Clean workspace base paths when prompted by user input
-        monkeypatch.setattr('builtins.input', lambda _: 'y')
+        monkeypatch.setattr('builtins.input', lambda: 'y')
         main(argv=argv + ['clean', 'workspace'])  # noqa
 
         with pytest.raises(argparse.ArgumentError):
