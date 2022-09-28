@@ -68,6 +68,16 @@ def test_main(monkeypatch):
         monkeypatch.setattr('builtins.input', lambda _: 'n')
         main(argv=argv + ['clean', 'workspace'])  # noqa
 
+        # Ignore one workspace base paths explicitly
+        main(argv=argv + ['clean', 'workspace', \
+            '--base-ignore', \
+                'log'])  # noqa
+
+        # Ignore one workspace base paths explicitly
+        main(argv=argv + ['clean', 'packages', \
+            '--base-ignore', \
+                'log'])  # noqa
+
         # Clean workspace base paths when prompted by user input
         monkeypatch.setattr('builtins.input', lambda _: 'y')
         main(argv=argv + ['clean', 'workspace'])  # noqa
