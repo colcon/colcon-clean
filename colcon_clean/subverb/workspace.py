@@ -47,18 +47,13 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
                     "Ignoring base handler for selection '{base_name}'"
                     .format_map(locals()))
                 continue
-            if base_name in base_handler_extensions:
-                base_handler_extension = base_handler_extensions[base_name]
-                workspace_paths = \
-                    base_handler_extension.get_workspace_paths(args=args)
-                for workspace_path in workspace_paths:
-                    workspace_path = Path(workspace_path).absolute()
-                    base_paths.update(
-                        scan_directory(workspace_path, recursion_filter))
-            else:
-                logger.warning(
-                    "No base handler for selection '{base_name}'"
-                    .format_map(locals()))
+            base_handler_extension = base_handler_extensions[base_name]
+            workspace_paths = \
+                base_handler_extension.get_workspace_paths(args=args)
+            for workspace_path in workspace_paths:
+                workspace_path = Path(workspace_path).absolute()
+                base_paths.update(
+                    scan_directory(workspace_path, recursion_filter))
 
         clean_paths(
             paths=base_paths,
