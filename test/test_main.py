@@ -6,7 +6,9 @@ from pathlib import Path
 import shutil
 from tempfile import mkdtemp
 
+import argparse
 from colcon_core.command import main
+import pytest
 
 
 def test_main(monkeypatch):
@@ -82,15 +84,17 @@ def test_main(monkeypatch):
         monkeypatch.setattr('builtins.input', lambda _: 'y')
         main(argv=argv + ['clean', 'workspace'])  # noqa
 
-        # Try cleaning packages with invalid base handler selection
-        main(argv=argv + ['clean', 'packages', '--yes', \
-            '--base-select', \
-                'foo'])  # noqa
+        with pytest.raises(argparse.ArgumentError):
+            # Try cleaning packages with invalid base handler selection
+            main(argv=argv + ['clean', 'packages', '--yes', \
+                '--base-select', \
+                    'foo'])  # noqa
 
-        # Try cleaning workspace with invalid base handler selection
-        main(argv=argv + ['clean', 'workspace', '--yes', \
-            '--base-select', \
-                'foo'])  # noqa
+        with pytest.raises(argparse.ArgumentError):
+            # Try cleaning workspace with invalid base handler selection
+            main(argv=argv + ['clean', 'workspace', '--yes', \
+                '--base-select', \
+                    'foo'])  # noqa
 
         print('ws_base: ', ws_base)
     finally:
