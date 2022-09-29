@@ -12,6 +12,13 @@ from colcon_core.command import main
 import pytest
 
 
+def _raising_error(self, message):
+    raise sys.exc_info()[1]
+
+
+argparse.ArgumentParser.error = _raising_error
+
+
 def test_main(monkeypatch):
     ws_base = Path(mkdtemp(prefix='test_colcon_'))
     resources_base = Path('test', 'resources').absolute()
@@ -85,43 +92,21 @@ def test_main(monkeypatch):
         monkeypatch.setattr('builtins.input', lambda: 'y')
         main(argv=argv + ['clean', 'workspace'])  # noqa
 
+        with pytest.raises(argparse.ArgumentError):
+            # Try cleaning packages with invalid base handler selection
+            main(argv=argv + ['clean', 'packages', \
+                '--base-select', \
+                    'foo'])  # noqa
+
+        with pytest.raises(argparse.ArgumentError):
+            # Try cleaning workspace with invalid base handler selection
+            main(argv=argv + ['clean', 'workspace', \
+                '--base-select', \
+                    'bar'])  # noqa
+
         print('ws_base: ', ws_base)
     finally:
         # the logging subsystem might still have file handles pending
         # therefore only try to delete the temporary directory
         # shutil.rmtree(ws_base, ignore_errors=True)
         pass
-
-
-class _RaisingArgumentParser(argparse.ArgumentParser):
-
-    def error(self, message):
-        raise sys.exc_info()[1]
-
-    def test_suppress_argument_error(self, monkeypatch):
-        ws_base = Path(mkdtemp(prefix='test_colcon_'))
-        resources_base = Path('test', 'resources').absolute()
-        shutil.copytree(resources_base / 'test_src', ws_base / 'src')
-
-        os.chdir(ws_base)
-        argv = []
-        os.environ['COLCON_EXTENSION_BLOCKLIST'] = (
-            'colcon_core.event_handler.desktop_notification:' +
-            os.environ.get('COLCON_EXTENSION_BLOCKLIST', ''))
-
-        main(argv=argv + ['build'])
-
-        # Clean workspace base paths when prompted by user input
-        monkeypatch.setattr('builtins.input', lambda: 'y')
-
-        with pytest.raises(argparse.ArgumentError):
-            # Try cleaning packages with invalid base handler selection
-            main(argv=argv + ['clean', 'packages', '--yes', \
-                '--base-select', \
-                    'foo'])  # noqa
-
-        with pytest.raises(argparse.ArgumentError):
-            # Try cleaning workspace with invalid base handler selection
-            main(argv=argv + ['clean', 'workspace', '--yes', \
-                '--base-select', \
-                    'bar'])  # noqa
