@@ -1,12 +1,22 @@
 # Copyright 2021 Ruffin White
 # Licensed under the Apache License, Version 2.0
 
+import argparse
 import os
 from pathlib import Path
 import shutil
+import sys
 from tempfile import mkdtemp
 
 from colcon_core.command import main
+import pytest
+
+
+def _raising_error(self, message):
+    raise sys.exc_info()[1]
+
+
+argparse.ArgumentParser.error = _raising_error
 
 
 def test_main(monkeypatch):
@@ -65,22 +75,34 @@ def test_main(monkeypatch):
         main(argv=argv + ['build'])
 
         # Don't clean workspace base paths when prompted by user input
-        monkeypatch.setattr('builtins.input', lambda _: 'n')
+        monkeypatch.setattr('builtins.input', lambda: 'n')
         main(argv=argv + ['clean', 'workspace'])  # noqa
+
+        # Ignore one workspace base paths explicitly
+        main(argv=argv + ['clean', 'workspace', \
+            '--base-ignore', \
+                'log'])  # noqa
+
+        # Ignore one workspace base paths explicitly
+        main(argv=argv + ['clean', 'packages', \
+            '--base-ignore', \
+                'log'])  # noqa
 
         # Clean workspace base paths when prompted by user input
-        monkeypatch.setattr('builtins.input', lambda _: 'y')
+        monkeypatch.setattr('builtins.input', lambda: 'y')
         main(argv=argv + ['clean', 'workspace'])  # noqa
 
-        # Try cleaning packages with invalid base handler selection
-        main(argv=argv + ['clean', 'packages', '--yes', \
-            '--base-select', \
-                'foo'])  # noqa
+        with pytest.raises(argparse.ArgumentError):
+            # Try cleaning packages with invalid base handler selection
+            main(argv=argv + ['clean', 'packages', \
+                '--base-select', \
+                    'foo'])  # noqa
 
-        # Try cleaning workspace with invalid base handler selection
-        main(argv=argv + ['clean', 'workspace', '--yes', \
-            '--base-select', \
-                'foo'])  # noqa
+        with pytest.raises(argparse.ArgumentError):
+            # Try cleaning workspace with invalid base handler selection
+            main(argv=argv + ['clean', 'workspace', \
+                '--base-select', \
+                    'bar'])  # noqa
 
         print('ws_base: ', ws_base)
     finally:

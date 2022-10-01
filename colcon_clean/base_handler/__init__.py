@@ -67,12 +67,21 @@ def add_base_handler_arguments(parser):
     """
     group = parser.add_argument_group(title='Base handler arguments')
     extensions = get_base_handler_extensions()
+    extension_keys = sorted(extensions.keys())
 
     group.add_argument(
         '--base-select', nargs='*', metavar='BASE_NAME',
-        default=sorted(extensions.keys()),
+        choices=extension_keys,
+        default=extension_keys,
         help='Select base names to clean in workspace '
-             '(default: [build, install, log, test_result])')
+             '(default: {extension_keys})'.format_map(locals()))
+
+    group.add_argument(
+        '--base-ignore', nargs='*', metavar='BASE_NAME',
+        choices=extension_keys,
+        default=[],
+        help='Ignore base names to clean in workspace '
+             '(default: [])')
 
     for key in sorted(extensions.keys()):
         extension = extensions[key]

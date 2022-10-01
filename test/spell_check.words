@@ -1,4 +1,5 @@
 apache
+argparse
 blocklist
 builtins
 chdir
