@@ -229,10 +229,7 @@ def clean_paths(paths, confirmed=False):
         return
 
     cwd_path = Path.cwd()
-    if confirmed:
-        for path in paths:
-            _clean_path(path)
-    else:
+    if not confirmed:
         print('Paths:')
         for path in sorted(paths):
             path = path.relative_to(cwd_path)
@@ -240,10 +237,14 @@ def clean_paths(paths, confirmed=False):
         question = 'Clean the above paths?'
         confirmed = query_yes_no(question)
 
+    if confirmed:
+        for path in paths:
+            _clean_path(path)
+
 
 def _onerror(func, path, excinfo):  # pragma: no cover
     if excinfo[0] in (OSError, PermissionError):  # pragma: no branch
-        logger.warn(
+        logger.warning(
             "Skipping path: '{path}'".format_map(locals()))
         logger.info(
             "Skipping info: '{excinfo[1]}'".format_map(locals()))

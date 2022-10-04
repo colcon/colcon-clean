@@ -1,0 +1,13 @@
+_common: &common
+  "test-result-base": "test_results"
+
+"clean.packages":
+  <<: *common
+"clean.workspace":
+  <<: *common
+"build":
+  <<: *common
+"test":
+  <<: *common
+"test-result":
+  <<: *common
