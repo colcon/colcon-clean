@@ -229,16 +229,17 @@ def clean_paths(paths, confirmed=False):
         return
 
     cwd_path = Path.cwd()
-    if confirmed:
-        for path in paths:
-            _clean_path(path)
-    else:
+    if not confirmed:
         print('Paths:')
         for path in sorted(paths):
             path = path.relative_to(cwd_path)
             print('    ', path)
         question = 'Clean the above paths?'
         confirmed = query_yes_no(question)
+
+    if confirmed:
+        for path in paths:
+            _clean_path(path)
 
 
 def _onerror(func, path, excinfo):  # pragma: no cover
