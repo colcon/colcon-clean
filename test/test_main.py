@@ -29,6 +29,8 @@ def test_main(monkeypatch):
     os.environ['COLCON_EXTENSION_BLOCKLIST'] = (
         'colcon_core.event_handler.desktop_notification:' +
         os.environ.get('COLCON_EXTENSION_BLOCKLIST', ''))
+    os.environ['COLCON_DEFAULTS_FILE'] = \
+        (resources_base / 'defaults.yaml').as_posix()
 
     try:
         main(argv=argv + ['build'])
