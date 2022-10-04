@@ -168,7 +168,7 @@ def test_main(monkeypatch):
             '--base-ignore', \
                 'log'])  # noqa
 
-        # Assert no workspace base paths are cleaned
+        # Assert implicitly selected workspace base paths are cleaned
         assert not (ws_base / 'build').exists()
         assert not (ws_base / 'install').exists()
         assert not (ws_base / 'test_results').exists()
