@@ -32,6 +32,7 @@ subparsers
 subverb
 tempfile
 thomas
+unittest
 wildcard
 workspaces
 yaml
