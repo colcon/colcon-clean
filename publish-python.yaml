@@ -1,0 +1,12 @@
+artifacts:
+  - type: wheel
+    uploads:
+      - type: pypi
+  - type: stdeb
+    uploads:
+      - type: packagecloud
+        config:
+          repository: dirk-thomas/colcon
+          distributions:
+            - ubuntu:jammy
+            - debian:bullseye
