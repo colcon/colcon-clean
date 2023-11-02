@@ -5,6 +5,7 @@ import os
 
 from colcon_clean.base_handler import BaseHandlerExtensionPoint
 from colcon_core.plugin_system import satisfies_version
+from colcon_core.argument_type import get_root_path_resolver
 
 BASE_PATH = 'build'
 
@@ -23,6 +24,7 @@ class TestResultBaseHandler(BaseHandlerExtensionPoint):
         parser.add_argument(
             '--test-result-base',
             default=self.base_path,
+            type=get_root_path_resolver(),
             help='The base path for all test_result directories '
                  '(default: {self.base_path})'.format_map(locals()))
 

@@ -5,6 +5,7 @@ import os
 
 from colcon_clean.base_handler import BaseHandlerExtensionPoint
 from colcon_core.plugin_system import satisfies_version
+from colcon_core.argument_type import get_root_path_resolver
 
 BASE_PATH = 'install'
 
@@ -21,6 +22,7 @@ class InstallBaseHandler(BaseHandlerExtensionPoint):
         parser.add_argument(
             '--install-base',
             default=self.base_path,
+            type=get_root_path_resolver(),
             help='The base path for all install directories '
                  '(default: {self.base_path})'.format_map(locals()))
 
