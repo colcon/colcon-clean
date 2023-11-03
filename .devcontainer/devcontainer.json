@@ -1,0 +1,26 @@
+{
+    "name": "colcon-clean",
+    "build": {
+        "dockerfile": "../Dockerfile",
+        "context": "..",
+        "target": "builder"
+    },
+    "workspaceFolder": "/usr/src/app",
+    "workspaceMount": "source=${localWorkspaceFolder},target=${containerWorkspaceFolder},type=bind",
+    "onCreateCommand": ".devcontainer/on-create-command.sh",
+    "updateContentCommand": ".devcontainer/update-content-command.sh",
+    "postCreateCommand": ".devcontainer/post-create-command.sh",
+    "customizations": {
+        "vscode": {
+            "settings": {},
+            "extensions": [
+				"eamodio.gitlens",
+				"esbenp.prettier-vscode",
+				"GitHub.copilot",
+				"streetsidesoftware.code-spell-checker",
+				"dirk-thomas.vscode-empy",
+				"ms-python.python"
+			]
+        }
+    }
+}
