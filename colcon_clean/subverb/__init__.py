@@ -232,14 +232,14 @@ def clean_paths(paths, confirmed=False):
     cwd_path = Path.cwd()
     if not confirmed:
         print('Paths:')
-        for path in sorted(paths):
-            path = os.path.relpath(path, cwd_path)
+        relpaths = (os.path.relpath(path, cwd_path) for path in paths)
+        for path in sorted(relpaths):
             print('    ', path)
         question = 'Clean the above paths?'
         confirmed = query_yes_no(question)
 
     if confirmed:
-        for path in paths:
+        for path in sorted(paths):
             _clean_path(path)
 
 

@@ -21,6 +21,8 @@ noqa
 pathlib
 plugin
 pytest
+relpath
+relpaths
 rmtree
 rtype
 scantree
