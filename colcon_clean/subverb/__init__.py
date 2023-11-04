@@ -2,6 +2,7 @@
 # Copyright 2021 Ruffin White
 # Licensed under the Apache License, Version 2.0
 
+import os
 from pathlib import Path
 import shutil
 
@@ -232,7 +233,7 @@ def clean_paths(paths, confirmed=False):
     if not confirmed:
         print('Paths:')
         for path in sorted(paths):
-            path = path.relative_to(cwd_path)
+            path = os.path.relpath(path, cwd_path)
             print('    ', path)
         question = 'Clean the above paths?'
         confirmed = query_yes_no(question)
