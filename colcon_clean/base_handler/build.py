@@ -22,7 +22,7 @@ class BuildBaseHandler(BaseHandlerExtensionPoint):
             '--build-base',
             default=self.base_path,
             help='The base path for all build directories '
-                 '(default: {self.base_path})'.format_map(locals()))
+                 f'(default: {self.base_path})')
 
     def get_workspace_paths(self, *, args):  # noqa: D102
         return [args.build_base]

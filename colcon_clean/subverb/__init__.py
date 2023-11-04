@@ -244,17 +244,14 @@ def clean_paths(paths, confirmed=False):
 
 def _onexc(func, path, excinfo):  # pragma: no cover
     if isinstance(excinfo, (PermissionError, OSError)):  # pragma: no branch
-        logger.warning(
-            "Skipping path: '{path}'".format_map(locals()))
-        logger.info(
-            "Skipping info: '{excinfo}'".format_map(locals()))
+        logger.warning(f"Skipping path: '{path}'")
+        logger.info(f"Skipping info: '{excinfo}'")
         return
     raise
 
 
 def _clean_path(path):
-    logger.info(
-        "Cleaning path: '{path}'".format_map(locals()))
+    logger.info(f"Cleaning path: '{path}'")
     if path.is_dir():
         shutil.rmtree(path, onexc=_onexc)
     else:
