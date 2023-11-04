@@ -7,8 +7,6 @@ set -eo pipefail
 # set -x
 # env
 
-git config --global --add safe.directory "*"
-
 CONSTRAINTS_URL=https://raw.githubusercontent.com/colcon/ci/main/constraints.txt
 CONSTRAINTS_FILE=/tmp/constraints.txt
 
