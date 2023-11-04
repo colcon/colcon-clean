@@ -18,6 +18,7 @@ mkdtemp
 monkeypatch
 nargs
 noqa
+onexc
 pathlib
 plugin
 pytest
