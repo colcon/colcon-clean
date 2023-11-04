@@ -9,13 +9,12 @@ set -eo pipefail
 
 git config --global --add safe.directory "*"
 
-# VENV=./
-# python -m venv $VENV
-# if [ -f $VENV/Scripts/activate ]; then
-#     . $VENV/Scripts/activate
-# else
-#     . $VENV/bin/activate
-# fi
-python -m pip install -U pip setuptools
+CONSTRAINTS_URL=https://raw.githubusercontent.com/colcon/ci/main/constraints.txt
+CONSTRAINTS_FILE=/tmp/constraints.txt
 
-# .devcontainer/update-content-command.sh
+# Download constraints
+curl -sSLo $CONSTRAINTS_FILE $CONSTRAINTS_URL
+# Remove this package from constraints
+sed -i "/^$(python setup.py --name)@/d" $CONSTRAINTS_FILE
+# Install dependencies, including any 'test' extras, as well as pytest-cov
+pip install -U -e .[test] pytest-cov -c $CONSTRAINTS_FILE

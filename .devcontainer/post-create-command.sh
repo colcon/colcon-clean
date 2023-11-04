@@ -10,4 +10,8 @@ set -eo pipefail
 # Enable autocomplete for user
 cp /etc/skel/.bashrc ~/
 
-python -m pytest --cov --cov-branch --cov-report xml:coverage.xml --cov-config setup.cfg
+# pytest \
+#     --cov \
+#     --cov-branch \
+#     --cov-report xml:../coverage.xml \
+#     --cov-config setup.cfg
