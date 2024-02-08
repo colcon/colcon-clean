@@ -14,12 +14,14 @@ gcov
 gitignore
 https
 iterdir
+linter
 mkdtemp
 monkeypatch
 nargs
 noqa
 pathlib
 plugin
+pydocstyle
 pytest
 rmtree
 rtype

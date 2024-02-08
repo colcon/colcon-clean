@@ -4,10 +4,6 @@
 from pathlib import Path
 
 import pytest
-from scspell import Report
-from scspell import SCSPELL_BUILTIN_DICT
-from scspell import spell_check
-
 
 spell_check_words_path = Path(__file__).parent / 'spell_check.words'
 
@@ -18,7 +14,12 @@ def known_words():
     return spell_check_words_path.read_text().splitlines()
 
 
+@pytest.mark.linter
 def test_spell_check(known_words):
+    from scspell import Report
+    from scspell import SCSPELL_BUILTIN_DICT
+    from scspell import spell_check
+
     source_filenames = [Path(__file__).parents[1] / 'setup.py'] + \
         list(
             (Path(__file__).parents[1] / 'colcon_clean')
@@ -36,21 +37,23 @@ def test_spell_check(known_words):
 
     unknown_word_count = len(report.unknown_words)
     assert unknown_word_count == 0, \
-        'Found {unknown_word_count} unknown words: '.format_map(locals()) + \
+        f'Found {unknown_word_count} unknown words: ' + \
         ', '.join(sorted(report.unknown_words))
 
     unused_known_words = set(known_words) - report.found_known_words
     unused_known_word_count = len(unused_known_words)
     assert unused_known_word_count == 0, \
-        '{unused_known_word_count} words in the word list are not used: ' \
-        .format_map(locals()) + ', '.join(sorted(unused_known_words))
+        f'{unused_known_word_count} words in the word list are not used: ' + \
+        ', '.join(sorted(unused_known_words))
 
 
+@pytest.mark.linter
 def test_spell_check_word_list_order(known_words):
     assert known_words == sorted(known_words), \
         'The word list should be ordered alphabetically'
 
 
+@pytest.mark.linter
 def test_spell_check_word_list_duplicates(known_words):
     assert len(known_words) == len(set(known_words)), \
         'The word list should not contain duplicates'

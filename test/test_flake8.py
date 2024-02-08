@@ -5,15 +5,21 @@ import logging
 from pathlib import Path
 import sys
 
-from flake8 import LOG
-from flake8.api.legacy import get_style_guide
+import pytest
 
 
-# avoid debug and info messages from flake8 internals
-LOG.setLevel(logging.WARN)
-
-
+@pytest.mark.flake8
+@pytest.mark.linter
 def test_flake8():
+    from flake8.api.legacy import get_style_guide
+
+    # avoid debug / info / warning messages from flake8 internals
+    logging.getLogger('flake8').setLevel(logging.ERROR)
+
+    # for some reason the pydocstyle logger changes to an effective level of 1
+    # set higher level to prevent the output to be flooded with debug messages
+    logging.getLogger('pydocstyle').setLevel(logging.WARNING)
+
     style_guide = get_style_guide(
         extend_ignore=['D100', 'D104'],
         show_source=True,
@@ -43,9 +49,6 @@ def test_flake8():
         if report_tests.total_errors:
             report_tests._application.formatter.show_statistics(
                 report_tests._stats)
-        print(
-            'flake8 reported {total_errors} errors'
-            .format_map(locals()), file=sys.stderr)
+        print(f'flake8 reported {total_errors} errors', file=sys.stderr)
 
-    assert not total_errors, \
-        'flake8 reported {total_errors} errors'.format_map(locals())
+    assert not total_errors, f'flake8 reported {total_errors} errors'
