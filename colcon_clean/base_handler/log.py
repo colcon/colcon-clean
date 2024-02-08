@@ -20,7 +20,7 @@ class LogBaseHandler(BaseHandlerExtensionPoint):
             '--log-base',
             default=self.base_path,
             help='The base path for all log directories '
-                 '(default: {self.base_path})'.format_map(locals()))
+                 f'(default: {self.base_path})')
 
     def get_workspace_paths(self, *, args):  # noqa: D102
         return [args.log_base]
