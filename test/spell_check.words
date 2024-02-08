@@ -24,6 +24,8 @@ pathlib
 plugin
 pydocstyle
 pytest
+relpath
+relpaths
 rmtree
 rtype
 scantree
