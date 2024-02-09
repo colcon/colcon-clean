@@ -9,4 +9,6 @@ artifacts:
           repository: dirk-thomas/colcon
           distributions:
             - ubuntu:jammy
+            - ubuntu:noble
             - debian:bookworm
+            - debian:trixie
