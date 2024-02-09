@@ -243,6 +243,14 @@ def clean_paths(paths, confirmed=False):
             _clean_path(path)
 
 
+def _onerror(func, path, excinfo):  # pragma: no cover
+    if excinfo[0] in (OSError, PermissionError):  # pragma: no branch
+        logger.warning(f"Skipping path: '{path}'")
+        logger.info(f"Skipping info: '{excinfo[1]}'")
+        return
+    raise
+
+
 def _onexc(func, path, excinfo):  # pragma: no cover
     if isinstance(excinfo, (PermissionError, OSError)):  # pragma: no branch
         logger.warning(f"Skipping path: '{path}'")
@@ -254,6 +262,10 @@ def _onexc(func, path, excinfo):  # pragma: no cover
 def _clean_path(path):
     logger.info(f"Cleaning path: '{path}'")
     if path.is_dir():
-        shutil.rmtree(path, onexc=_onexc)
+        try:
+            shutil.rmtree(path, onexc=_onexc)
+        except TypeError:
+            # TODO: Remove when minimum python version is 3.12
+            shutil.rmtree(path, onerror=_onerror)
     else:
         path.unlink()
