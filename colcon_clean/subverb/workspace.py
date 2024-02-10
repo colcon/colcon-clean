@@ -43,7 +43,8 @@ class WorkspaceCleanSubverb(CleanSubverbExtensionPoint):
 
         for base_name in args.base_select:
             if base_name in args.base_ignore:
-                logger.info(f"Ignoring base handler for selection '{base_name}'")
+                logger.info(
+                    f"Ignoring base handler for selection '{base_name}'")
                 continue
             base_handler_extension = base_handler_extensions[base_name]
             workspace_paths = \
