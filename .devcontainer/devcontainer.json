@@ -1,0 +1,16 @@
+{
+    "name": "colcon-clean",
+    "image": "python:3",
+    "workspaceFolder": "/workspace/colcon-clean",
+    "workspaceMount": "source=${localWorkspaceFolder},target=${containerWorkspaceFolder},type=bind",
+    "onCreateCommand": ".devcontainer/on-create-command.sh",
+    "postCreateCommand": ".devcontainer/post-create-command.sh",
+    "customizations": {
+        "vscode": {
+            "settings": {},
+            "extensions": [
+                "ms-python.python"
+            ]
+        }
+    }
+}
